@@ -8,27 +8,25 @@ connect.then((db) => {
 
 	console.log('Connected correctly to server ');
 
-	var newDish = Dishes({
+	Dishes.create({//create and insert document into database
 		name: 'Torontopizza',
 		description: 'test'
+	})
+	.then((dish) => {
+		console.log(dish);
+
+		return Dishes.find({}).exec();
+	})
+	.then((dishes) => {
+		console.log(dishes);
+
+		return Dishes.remove({});
+	})
+	.then(() => {
+
+		return mongoose.connection.close();
+	})
+	.catch((err) => {
+		console.log(err);
 	});
-
-	newDish.save()// insert document into database
-		.then((dish) => {
-			console.log(dish);
-
-			return Dishes.find({}).exec();
-		})
-		.then((dishes) => {
-			console.log(dishes);
-
-			return Dishes.remove({});
-		})
-		.then(() => {
-
-			return mongoose.connection.close();
-		})
-		.catch((err) => {
-			console.log(err);
-		});
 });
