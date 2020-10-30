@@ -32,6 +32,36 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 
+//this place of checking authentication is matter, because after it the place app gets access to resources
+function auth (req, res, next) {
+	console.log(req.headers);
+	var authHeader = req.headers.authorization;
+	if (!authHeader) {
+		//console.log('FUNCTION AUTH IS RUNNING');
+		var err = new Error('You are not autheticated!');
+		res.setHeader('WWW-Authenticate', 'Basic');
+		err.status = 401;
+		next(err);
+		return;
+	}
+	var auth = new Buffer(authHeader.split(' ')[1], 'base64').toString().split(':'); //it's decoding user:password.[1] means that we will be look at second element of array because 1st element it's word "Basic" 
+
+	var username = auth[0];
+	var password = auth[1];
+
+	if (username === 'user' && password === 'password') {
+
+		next();
+	}
+	else {
+		var err = new Error('You are not autheticated!');
+		res.setHeader('WWW-Authenticate', 'Basic');
+		err.status = 401;
+		next(err);
+	}
+}
+app.use(auth);
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
