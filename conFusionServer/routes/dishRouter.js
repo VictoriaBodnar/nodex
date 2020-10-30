@@ -17,7 +17,7 @@ dishRouter.route('/')
 	.catch((err) => next(err));
 })
 .post((req, res, next) => {
-	res.end('Will create the dish ' + req.body.name + ' with details: ' + req.body.description);
+	//res.end('Will create the dish ' + req.body.name + ' with details: ' + req.body.description);
 	Dishes.create(req.body)
 	.then((dish) => {
 		console.log('Dish created', dish);
@@ -99,7 +99,7 @@ dishRouter.route('/:dishId/comments')
 	.catch((err) => next(err));
 })
 .post((req, res, next) => {
-	res.end('Will create the dish ' + req.body.name + ' with details: ' + req.body.description);
+	//res.end('Will create the dish ' + req.body.name + ' with details: ' + req.body.description);
 	Dishes.findById(req.params.dishId)
 	.then((dish) => {
 		if (dish != null) {
