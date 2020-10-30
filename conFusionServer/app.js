@@ -17,7 +17,7 @@ const url = 'mongodb://localhost:27017/conFusion';
 const connect = mongoose.connect(url);
 
 connect.then((db) => {
-	console.log('CCConnected correctly to server');
+	console.log('Connected correctly to server');
 }, (err) => { console.log(err); });
 
 var app = express();
@@ -29,35 +29,50 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('12345-67890-09876-54321'));
 
 
 //this place of checking authentication is matter, because after it the place app gets access to resources
 function auth (req, res, next) {
-	console.log(req.headers);
-	var authHeader = req.headers.authorization;
-	if (!authHeader) {
-		//console.log('FUNCTION AUTH IS RUNNING');
-		var err = new Error('You are not autheticated!');
-		res.setHeader('WWW-Authenticate', 'Basic');
-		err.status = 401;
-		next(err);
-		return;
-	}
-	var auth = new Buffer(authHeader.split(' ')[1], 'base64').toString().split(':'); //it's decoding user:password.[1] means that we will be look at second element of array because 1st element it's word "Basic" 
+	console.log(req.signedCookies);
 
-	var username = auth[0];
-	var password = auth[1];
+	if (!req.signedCookies.user) {
 
-	if (username === 'user' && password === 'password') {
+		var authHeader = req.headers.authorization;
+		if (!authHeader) {
+			//console.log('FUNCTION AUTH IS RUNNING');
+			var err = new Error('You are not autheticated!');
+			res.setHeader('WWW-Authenticate', 'Basic');
+			err.status = 401;
+			return next(err);
+		}
+		var auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':'); //it's decoding user:password.[1] means that we will be look at second element of array because 1st element it's word "Basic" 
 
-		next();
+		var username = auth[0];
+		var password = auth[1];
+
+		if (username === 'admin' && password === 'password') {
+			res.cookie('user','admin',{signed: true});
+			next();
+		}
+		else {
+			var err = new Error('You are not autheticated!');
+			res.setHeader('WWW-Authenticate', 'Basic');
+			err.status = 401;
+			return next(err);
+		}
 	}
 	else {
-		var err = new Error('You are not autheticated!');
-		res.setHeader('WWW-Authenticate', 'Basic');
-		err.status = 401;
-		next(err);
+		if (req.signedCookies.user === 'admin') {
+			
+			next();
+		}
+		else {
+			var err = new Error('You are not autheticated!');
+			res.setHeader('WWW-Authenticate', 'Basic');
+			err.status = 401;
+			return next(err);
+		}
 	}
 }
 app.use(auth);
