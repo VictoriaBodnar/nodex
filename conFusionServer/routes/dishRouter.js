@@ -191,29 +191,32 @@ dishRouter.route('/:dishId/comments/:commentId')
 	.then((dish) => {
 		//req.body.author = req.user._id
 		if (dish != null && dish.comments.id(req.params.commentId) != null) {
-			if (dish.comments.id(req.params.commentId).author != req.user._id)  {
-				var err = new Error('You are not allowed to perform this operation! Only the author of comment can makes the changes! ');
+			//if (dish.comments.id(req.params.commentId).author._id != req.user._id)  {///Id1.equals(id2)
+				var ff = dish.comments.id(req.params.commentId).author._id;
+			//if (ff.equals(req.user._id))  {
+				if (ff != req.user._id)  {
+				//dish.comments.push(req.body);
+				if (req.body.rating) {
+					dish.comments.id(req.params.commentId).rating = req.body.rating;
+				}
+				if (req.body.comment){
+					dish.comments.id(req.params.commentId).comment = req.body.comment;
+				}
+				dish.save()
+				.then((dish) => {
+					Dishes.findById(dish._id)
+					.populate('comments.author')
+					.then((dish) => {
+						res.statusCode = 200;
+						res.setHeader('Content-Type', 'application/json');
+						res.json(dish);
+					})
+					
+				}, err => next(err));
+			}
+				var err = new Error('You are not allowed to perform this operation! Only the author of comment can makes the changes! ' + req.user._id + '*******' + dish.comments.id(req.params.commentId).author._id );
 		        err.status = 403;
 		        return next(err);
-			}
-			//dish.comments.push(req.body);
-			if (req.body.rating) {
-				dish.comments.id(req.params.commentId).rating = req.body.rating;
-			}
-			if (req.body.comment){
-				dish.comments.id(req.params.commentId).comment = req.body.comment;
-			}
-			dish.save()
-			.then((dish) => {
-				Dishes.findById(dish._id)
-				.populate('comments.author')
-				.then((dish) => {
-					res.statusCode = 200;
-					res.setHeader('Content-Type', 'application/json');
-					res.json(dish);
-				})
-				
-			}, err => next(err));
 		}
 		else if (dish == null) {
 			err = new Error('Dish' + req.params.dishId + 'not found');
