@@ -3,13 +3,15 @@ const bodyParser = require('body-parser');
 var User = require('../models/user');
 var passport = require('passport');
 var authenticate = require('../authenticate');
+const cors = require('./cors');
 var router = express.Router();
 
 
 router.use(bodyParser.json());
 
  router.route('/')
-  .get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+ //.options(cors.corsWithOptions, (req, res) => {res.sendStatus(200);})//preflight
+  .get(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
       User.find({})
       .then((user) => {
         res.statusCode = 200;
@@ -19,7 +21,7 @@ router.use(bodyParser.json());
       .catch((err) => next(err));
   });
 
-router.post('/signup', (req, res, next) => {
+router.post('/signup', cors.corsWithOptions, (req, res, next) => {
   User.register(new User({username: req.body.username}), 
     req.body.password, (err, user) => {
   //  User.register(new User({username: req.body.username, password: req.body.password}), (err, user) => {
@@ -50,7 +52,7 @@ router.post('/signup', (req, res, next) => {
   });
 });
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
+router.post('/login', cors.corsWithOptions,  passport.authenticate('local'), (req, res) => {
   
   var token = authenticate.getToken({_id: req.user._id});
   res.statusCode = 200;
