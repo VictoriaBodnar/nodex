@@ -48,8 +48,6 @@ dishRouter.route('/')
 	.catch((err) => next(err));
 });
 
-
-
 dishRouter.route('/:dishId')
 .options(cors.corsWithOptions, (req, res) => {res.sendStatus(200);})
 .get(cors.cors, (req, res, next) => {
@@ -164,7 +162,6 @@ dishRouter.route('/:dishId/comments')
 	}, err => next(err))
 	.catch((err) => next(err));
 });
-
 
 
 dishRouter.route('/:dishId/comments/:commentId')
