@@ -25,13 +25,13 @@ favoriteRouter.route('/')
 
 	Favorites.create(req.body)
 	.then((favorite) => {
-		favorite.user.id = req.user._id;//присвоить ид тек.пользователя которій создает фаворитов
-		if (req.body.rating) {
-				dish.comments.id(req.params.commentId).rating = req.body.rating;
-			}
-			if (req.body.comment){
-				dish.comments.id(req.params.commentId).comment = req.body.comment;
-			}
+		//favorite.user.id = req.user._id;//присвоить ид тек.пользователя которій создает фаворитов
+		var err = new Error('****' + req.user._id + '***');
+		return next(err);
+		//favorite.dishes.dish.id = req.body._id;//присвоить ид блюда фаворита
+		if (req.body) {
+			favorite.dishes.push(req.body);
+		}
 		console.log('Favorite created', favorite);
 		res.statusCode = 200;
 		res.setHeader('Content-Type', 'application/json');
@@ -52,3 +52,5 @@ favoriteRouter.route('/')
 	}, err => next(err))
 	.catch((err) => next(err));*/
 });
+
+module.exports = favoriteRouter;
