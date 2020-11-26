@@ -65,16 +65,15 @@ favoriteRouter.route('/:dishId')
 	//res.end('POST operation not supported on /dishes/' + req.params.dishId);
 })
 .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
-	Favorites.find({user: req.user._id})
-	//.populate('dishes.dish')
-	//.populate('user')
-	.then((favorite) => {
+	Favorites.findOne({user: req.user._id})
+	  .then((favorite) => {
 		if (favorite != null) {//update favorites=====================================================================================
 			console.log('Favorite @@@@@', favorite);
 			//dish.comments.id(req.params.commentId).author._id//ЄТО ВІВОДИТСЯ
 			//favorite.dishes.id(req.params.dishId).dish._id
 						
-			res.end('***********' + req.params.dishId + '*************' + favorite);//dish.comments.id(req.params.commentId).author//favorite.dishes.id(req.params.dishId).dish._id
+			res.end('***********' + req.params.dishId + '*************' + favorite.dishes.find({dish: '5fb589d294b3812c0cf1f55c'}).dish);//dish.comments.id(req.params.commentId).author//favorite.dishes.id(req.params.dishId).dish._id
+			//res.end('***********' + req.params.dishId + '*************' + favorite.dishes.id('5fc000e7815cf12f105a8b9c').dish);//это работает
 			/*req.body.author = req.user._id
 			dish.comments.push(req.body);
 			dish.save()
@@ -101,6 +100,7 @@ favoriteRouter.route('/:dishId')
 		}
 	}, err => next(err))
 	.catch((err) => next(err));
+
 })
 .delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
 	
@@ -108,16 +108,24 @@ favoriteRouter.route('/:dishId')
 
 module.exports = favoriteRouter;
 
+//mongoose find in array of objects
+//https://stackoverflow.com/questions/22806326/mongoose-mongodb-querying-an-array-of-objects
 
 
 
+	
+	/*
 
 
-	/*Favorites.create({"user": req.user._id, "dishes": [{"dish": req.params.dishId}]})
+	Favorites.create({"user": req.user._id, "dishes": [{"dish": req.params.dishId}]})
 	.then((favorite) => {
+		res.end('***********' + req.params.dishId + '*************' + favorite.id);///YES
 		console.log('Favorite created', favorite);
 		res.statusCode = 200;
 		res.setHeader('Content-Type', 'application/json');
 		res.json(favorite);
 	}, err => next(err))
 	.catch((err) => next(err));*/
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
