@@ -252,6 +252,8 @@ dishRouter.route('/:dishId/comments/:commentId')
 	.then((dish) => {
 		//req.body.author = req.user._id
 		if (dish != null && dish.comments.id(req.params.commentId) != null) {
+
+			//res.end('************************' + dish.comments.id(req.params.commentId).author._id);
 			//id1 = dish.comments.id(req.params.commentId).author._id; id2 = req.user._id;
 			id1 = JSON.stringify(dish.comments.id(req.params.commentId).author._id); id2 = JSON.stringify(req.user._id);
 			//if (!dish.comments.id(req.params.commentId).author.equals(req.user._id)) {// the right way of checking

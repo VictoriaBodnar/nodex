@@ -5,10 +5,8 @@ const Schema = mongoose.Schema;
 var dishesSchema = new Schema({
     dish:  {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'dishSchema'
+        ref: 'Dish'
     }
-}, {
-    timestamps: true
 });
 
 var favoriteSchema = new Schema({
