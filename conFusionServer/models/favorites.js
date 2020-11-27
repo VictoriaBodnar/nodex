@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 
 var dishesSchema = new Schema({
-    dish:  {
+    id:  {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Dish'
     }
