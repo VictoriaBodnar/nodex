@@ -22,3 +22,4 @@ var favoriteSchema = new Schema({
 var Favorites = mongoose.model('Favorite', favoriteSchema);
 
 module.exports = Favorites;
+

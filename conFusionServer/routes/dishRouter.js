@@ -188,66 +188,10 @@ dishRouter.route('/:dishId/comments/:commentId')
 	}, err => next(err))
 	.catch((err) => next(err));
 })
-.post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {//*
+.post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
 	res.end('POST operation not supported on /dishes/' + req.params.dishId + '/comments/' + req.params.commentId);
 })
-//************************************************************************************************************************
-/*.put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {//*
-	Dishes.findById(req.params.dishId)
-	.then((dish) => {
-		//req.body.author = req.user._id
-		if (dish != null && dish.comments.id(req.params.commentId) != null) {
-<<<<<<< HEAD
-			//id1 = dish.comments.id(req.params.commentId).author._id; id2 = req.user._id;
-			id1 = JSON.stringify(dish.comments.id(req.params.commentId).author._id); id2 = JSON.stringify(req.user._id);
-			//if (id1 != id2)  {
-			if (!dish.comments.id(req.params.commentId).author.equals(req.user._id)) {	
-				//var err = new Error('You are not allowed to perform this operation! Only the author of comment can makes the changes! '+ typeof(id1) + '*******' + typeof(id2));
-				var err = new Error('You are not allowed to perform this operation! Only the author of comment can makes the changes! ');
-=======
-			//if (dish.comments.id(req.params.commentId).author._id != req.user._id)  {///Id1.equals(id2)
-				var ff = dish.comments.id(req.params.commentId).author._id;
-			//if (ff.equals(req.user._id))  {
-				if (ff != req.user._id)  {
-				//dish.comments.push(req.body);
-				if (req.body.rating) {
-					dish.comments.id(req.params.commentId).rating = req.body.rating;
-				}
-				if (req.body.comment){
-					dish.comments.id(req.params.commentId).comment = req.body.comment;
-				}
-				dish.save()
-				.then((dish) => {
-					Dishes.findById(dish._id)
-					.populate('comments.author')
-					.then((dish) => {
-						res.statusCode = 200;
-						res.setHeader('Content-Type', 'application/json');
-						res.json(dish);
-					})
-					
-				}, err => next(err));
-			}
-				var err = new Error('You are not allowed to perform this operation! Only the author of comment can makes the changes! ' + req.user._id + '*******' + dish.comments.id(req.params.commentId).author._id );
->>>>>>> 51f9ec79e349f47baf42aba8cc7b54873f335a42
-		        err.status = 403;
-		        return next(err);
-		}
-		else if (dish == null) {
-			err = new Error('Dish' + req.params.dishId + 'not found');
-			err.status = 404;
-			return next(err);
-		}
-		else {
-			err = new Error('Comment' + req.params.commentId + 'not found');
-			err.status = 404;
-			return next(err);
-		}
-	}, err => next(err))
-	.catch((err) => next(err));
-})*/
-//*********************************************************************************************************************************************
-.put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {//*
+.put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
 	Dishes.findById(req.params.dishId)
 	.then((dish) => {
 		//req.body.author = req.user._id
